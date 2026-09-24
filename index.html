@@ -106,17 +106,20 @@ vercel-live-feedback, #__vercel-toolbar, [data-vercel-toolbar], div[class*="verc
   display: none !important;
   visibility: hidden !important;
 }
-/* Protección Anti-Copia e Imágenes */
+/* Protección Total Anti-Copia, Anti-Descarga y Anti-Inspección */
 img {
   -webkit-user-drag: none !important;
   user-drag: none !important;
+  -webkit-touch-callout: none !important;
   pointer-events: auto;
 }
-.no-select {
+.no-save-img {
+  pointer-events: none;
   -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
+}
+* {
+  -webkit-touch-callout: none;
 }
 </style>
 </head>
@@ -646,7 +649,7 @@ const INSTAGRAM_HANDLE = "enbakaneriaperfumes";
 // Blindaje Criptográfico de Credenciales (Hashes SHA-256 no reversibles)
 // Ni siquiera inspeccionando el código fuente pueden ver tu correo ni tu contraseña
 const _AUTH_HASH_E = "48cf23b5f20573b9bf41a54949df2233f5f82c4d3ef67c0e87d991094f2e6953"; // encarbjorge@gmail.com
-const _AUTH_HASH_P = "d0ff5974b6aa52cf562bea5921840c032a860a91a3512f7fe8f768f6bbe005f6"; // 1.0
+const _AUTH_HASH_P = "60f05e81ebaf5ae5ab250501ab84d1cdf2e2dce40d7ad5f7780b3fb6f83829e7"; // Nueva contraseña de alta seguridad
 
 // Configuración protegida de la base de datos JSONBin (Ofuscada contra bots y scanners de claves)
 const JSONBIN_BIN_ID = "6ab59051ffd5d160532be067";
@@ -1422,29 +1425,38 @@ function showToast(message, type = 'info') {
 }
 
 // =========================================================================
-// PROTECCIÓN ANTI-MANIPULACIÓN Y BLINDAJE DE SEGURIDAD
+// PROTECCIÓN TOTAL ANTI-MANIPULACIÓN, ANTI-CLIC DERECHO Y ANTI-INSPECCIÓN
 // =========================================================================
-// Bloqueo de atajos de desarrollador (F12, Ctrl+Shift+I/J/C, Ctrl+U) para dificultar inspecciones
-document.addEventListener('keydown', (e) => {
-  if (
-    e.key === 'F12' ||
-    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
-    (e.ctrlKey && (e.key === 'U' || e.key === 'u'))
-  ) {
-    // Si no está autenticado como administrador, bloquea la inspección
-    if (sessionStorage.getItem('enbakaneria_admin') !== 'true') {
-      e.preventDefault();
-      showToast('🛡️ Acción restringida por política de seguridad', 'warning');
-    }
+// Bloqueo estricto del clic derecho en toda la web para proteger fotos, logo y código
+window.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  return false;
+}, { capture: true });
+
+// Bloqueo de arrastre de imágenes y del logo
+window.addEventListener('dragstart', (e) => {
+  if (e.target.nodeName === 'IMG') {
+    e.preventDefault();
+    return false;
   }
 });
 
-// Deshabilitar menú contextual (clic derecho) para visitantes para proteger las fotos y código
-document.addEventListener('contextmenu', (e) => {
-  if (sessionStorage.getItem('enbakaneria_admin') !== 'true') {
-    e.preventDefault();
+// Bloqueo de atajos de teclado para ver código fuente o abrir herramientas (F12, Ctrl+U, Ctrl+Shift+I, etc.)
+window.addEventListener('keydown', (e) => {
+  const isDevTools = 
+    e.key === 'F12' ||
+    (e.ctrlKey && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key)) ||
+    (e.ctrlKey && ['U', 'u', 'S', 's'].includes(e.key));
+
+  if (isDevTools) {
+    if (sessionStorage.getItem('enbakaneria_admin') !== 'true') {
+      e.preventDefault();
+      e.stopPropagation();
+      showToast('🛡️ Acción bloqueada por políticas de seguridad', 'warning');
+      return false;
+    }
   }
-});
+}, { capture: true });
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', () => {
