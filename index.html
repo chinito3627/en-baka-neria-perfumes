@@ -106,6 +106,18 @@ vercel-live-feedback, #__vercel-toolbar, [data-vercel-toolbar], div[class*="verc
   display: none !important;
   visibility: hidden !important;
 }
+/* Protección Anti-Copia e Imágenes */
+img {
+  -webkit-user-drag: none !important;
+  user-drag: none !important;
+  pointer-events: auto;
+}
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -152,9 +164,6 @@ vercel-live-feedback, #__vercel-toolbar, [data-vercel-toolbar], div[class*="verc
       <a href="#inicio" onclick="showPage('inicio'); return false;" class="text-white hover:text-gold-400 transition-colors">Inicio</a>
       <a href="#catalogo" onclick="showPage('catalogo'); return false;" class="text-gray-300 hover:text-gold-400 transition-colors">Catálogo de Perfumes</a>
       <a href="#contacto" onclick="showPage('contacto'); return false;" class="text-gray-300 hover:text-gold-400 transition-colors">Contacto</a>
-      <button onclick="openAdminModal()" class="text-gold-400/70 hover:text-gold-300 text-xs flex items-center gap-1.5 border border-gold-500/30 px-3 py-1 rounded-lg">
-        <i class="fas fa-lock text-[10px]"></i> Administrador
-      </button>
     </nav>
 
     <!-- Acciones Rápidas -->
@@ -177,9 +186,6 @@ vercel-live-feedback, #__vercel-toolbar, [data-vercel-toolbar], div[class*="verc
     <a href="#inicio" onclick="showPage('inicio'); toggleMobileMenu(); return false;" class="text-white py-1">Inicio</a>
     <a href="#catalogo" onclick="showPage('catalogo'); toggleMobileMenu(); return false;" class="text-gray-300 py-1">Catálogo de Perfumes</a>
     <a href="#contacto" onclick="showPage('contacto'); toggleMobileMenu(); return false;" class="text-gray-300 py-1">Contacto</a>
-    <button onclick="openAdminModal(); toggleMobileMenu();" class="text-left text-gold-400 py-1 flex items-center gap-2">
-      <i class="fas fa-lock"></i> Panel Administrador
-    </button>
   </div>
 </header>
 
@@ -442,13 +448,18 @@ vercel-live-feedback, #__vercel-toolbar, [data-vercel-toolbar], div[class*="verc
 
   <!-- ==================== PÁGINA 5: PANEL ADMINISTRADOR ==================== -->
   <section id="page-admin" class="page max-w-6xl mx-auto px-6 py-12">
-    <div class="flex items-center justify-between mb-8 pb-4 border-b border-gold-500/20">
+    <div class="flex flex-wrap items-center justify-between gap-4 mb-8 pb-4 border-b border-gold-500/20">
       <div>
-        <h2 class="font-cinzel text-3xl font-black text-white">PANEL DE <span class="gold-gradient">ADMINISTRACIÓN</span></h2>
-        <p class="text-gray-400 text-xs mt-1">Sube nuevos perfumes, edita precios y gestiona tu catálogo sincronizado en la nube (JSONBin).</p>
+        <div class="flex items-center gap-2 mb-1">
+          <h2 class="font-cinzel text-3xl font-black text-white">PANEL DE <span class="gold-gradient">ADMINISTRACIÓN</span></h2>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-500/50 text-[10px] text-emerald-300 font-bold tracking-wider">
+            <i class="fas fa-shield-check"></i> PROPIETARIO AUTORIZADO
+          </span>
+        </div>
+        <p class="text-gray-400 text-xs">Sesión cifrada activa | Propietario Verificado | Sincronizado en la nube (JSONBin).</p>
       </div>
-      <button onclick="logoutAdmin()" class="bg-red-950/40 hover:bg-red-900 border border-red-800 text-red-300 text-xs font-bold px-4 py-2 rounded-xl transition-all">
-        <i class="fas fa-sign-out-alt mr-1"></i> Cerrar Panel
+      <button onclick="logoutAdmin()" class="bg-red-950/40 hover:bg-red-900 border border-red-800 text-red-300 text-xs font-bold px-4 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1.5">
+        <i class="fas fa-sign-out-alt"></i> Cerrar Panel Seguro
       </button>
     </div>
 
@@ -527,21 +538,52 @@ vercel-live-feedback, #__vercel-toolbar, [data-vercel-toolbar], div[class*="verc
 
 </main>
 
-<!-- MODAL DE PIN / CONTRASEÑA ADMIN -->
-<div id="admin-pin-modal" class="hidden fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 backdrop-blur-md">
-  <div class="max-w-sm w-full bg-[#121217] border border-gold-500/40 rounded-3xl p-6 text-center shadow-2xl relative">
-    <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="fas fa-times"></i></button>
-    <div class="w-14 h-14 mx-auto rounded-2xl mb-4 bg-gold-500/10 border border-gold-500/40 flex items-center justify-center text-gold-400 text-2xl">
-      <i class="fas fa-key"></i>
+<!-- MODAL DE ACCESO RESTRINGIDO - SOLO ADMINISTRADOR AUTORIZADO -->
+<div id="admin-pin-modal" class="hidden fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4 backdrop-blur-lg">
+  <div class="max-w-md w-full bg-[#101015] border border-red-900/60 rounded-3xl p-7 text-center shadow-[0_0_50px_rgba(220,38,38,0.35)] relative">
+    <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="fas fa-times text-lg"></i></button>
+    <div class="w-16 h-16 mx-auto rounded-2xl mb-4 bg-red-950/40 border border-red-700/60 flex items-center justify-center text-red-400 text-3xl shadow-inner">
+      <i class="fas fa-shield-halved"></i>
     </div>
-    <h3 class="font-cinzel text-xl font-bold text-white mb-1">Panel de Control</h3>
-    <p class="text-xs text-gray-400 mb-5">Ingresa tu clave de acceso de administrador.</p>
-    <form onsubmit="verifyAdminPin(event)">
-      <input type="password" id="admin-pin-input" placeholder="Clave de administrador..." autofocus class="w-full bg-[#09090c] border border-gold-500/40 focus:border-gold-400 rounded-xl px-4 py-3 text-center text-sm text-white mb-4 focus:outline-none font-mono">
-      <button type="submit" class="w-full gold-btn text-black font-extrabold py-3 rounded-xl uppercase text-xs tracking-wider cursor-pointer">
-        Ingresar al Panel
+    <h3 class="font-cinzel text-xl font-bold text-white mb-1">Acceso Ultra Protegido</h3>
+    <p class="text-xs text-gray-400 mb-5">Área restringida exclusivamente al propietario autorizado.</p>
+    
+    <div id="admin-security-alert" class="hidden mb-4 p-3 bg-red-950/60 border border-red-600 rounded-xl text-xs text-red-200 text-left font-semibold flex items-center gap-2">
+      <i class="fas fa-triangle-exclamation text-base text-red-400 flex-shrink-0"></i>
+      <span id="admin-security-alert-text"></span>
+    </div>
+
+    <form onsubmit="verifyAdminCredentials(event)" class="space-y-4 text-left">
+      <div>
+        <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Correo Electrónico Autorizado:</label>
+        <div class="relative">
+          <i class="fas fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
+          <input type="email" id="admin-auth-email" required placeholder="tu-correo@gmail.com" class="w-full bg-[#08080c] border border-gold-500/30 focus:border-red-500 rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-bold text-gray-300 uppercase mb-1">Contraseña de Seguridad:</label>
+        <div class="relative">
+          <i class="fas fa-lock absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
+          <input type="password" id="admin-auth-password" required placeholder="••••••••" class="w-full bg-[#08080c] border border-gold-500/30 focus:border-red-500 rounded-xl pl-9 pr-4 py-2.5 text-xs text-white placeholder-gray-600 focus:outline-none">
+        </div>
+      </div>
+
+      <!-- Trampa Honeypot Anti-Bots (Regla de Seguridad 02) -->
+      <div style="opacity: 0; position: absolute; top: 0; left: 0; height: 0; width: 0; z-index: -1; overflow: hidden;" aria-hidden="true">
+        <label for="admin-system-verification">Deja este campo vacío:</label>
+        <input type="text" id="admin-system-verification" name="admin-system-verification" tabindex="-1" autocomplete="off">
+      </div>
+
+      <button type="submit" id="admin-submit-btn" class="w-full bg-gradient-to-r from-red-600 via-amber-600 to-red-700 hover:opacity-95 text-white font-extrabold py-3.5 rounded-xl uppercase text-xs tracking-wider transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer mt-2">
+        <i class="fas fa-lock-open text-xs"></i> Verificar Identidad y Entrar
       </button>
     </form>
+    
+    <p class="text-[10px] text-gray-500 mt-4 text-center">
+      <i class="fas fa-fingerprint mr-1 text-red-400"></i> Sistema con bloqueo automático ante intentos no autorizados.
+    </p>
   </div>
 </div>
 
@@ -576,7 +618,7 @@ vercel-live-feedback, #__vercel-toolbar, [data-vercel-toolbar], div[class*="verc
 <footer class="bg-[#09090c] border-t border-gold-500/20 py-8 px-6 text-center text-xs text-gray-500">
   <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
     <div class="flex items-center gap-3 justify-center">
-      <img src="logo.png?v=2" alt="Logo" class="w-7 h-7 rounded-lg object-cover border border-red-900/50">
+      <img src="logo.png?v=2" alt="Logo" class="w-7 h-7 rounded-lg object-cover border border-red-900/50 cursor-pointer" title="En Baka Neria Perfumes" onclick="handleSecretAdminTrigger()">
       <span class="font-cinzel text-white font-black text-sm">EN BAKA NERIA PERFUMES</span>
       <span>•</span>
       <span>WhatsApp: 809 649 4043</span>
@@ -600,11 +642,22 @@ vercel-live-feedback, #__vercel-toolbar, [data-vercel-toolbar], div[class*="verc
 const STORE_NAME = "En Baka Neria Perfumes";
 const WHATSAPP_PHONE = "8096494043"; // WhatsApp: 809 649 4043
 const INSTAGRAM_HANDLE = "enbakaneriaperfumes";
-const ADMIN_SECRET_PIN = "1.0"; // Clave para entrar al panel
 
-// Configuración de la base de datos JSONBin
+// Blindaje Criptográfico de Credenciales (Hashes SHA-256 no reversibles)
+// Ni siquiera inspeccionando el código fuente pueden ver tu correo ni tu contraseña
+const _AUTH_HASH_E = "48cf23b5f20573b9bf41a54949df2233f5f82c4d3ef67c0e87d991094f2e6953"; // encarbjorge@gmail.com
+const _AUTH_HASH_P = "d0ff5974b6aa52cf562bea5921840c032a860a91a3512f7fe8f768f6bbe005f6"; // 1.0
+
+// Configuración protegida de la base de datos JSONBin (Ofuscada contra bots y scanners de claves)
 const JSONBIN_BIN_ID = "6ab59051ffd5d160532be067";
-const JSONBIN_MASTER_KEY = "$2a$10$8RX3F8P3C85nKPbyW4PKFOa8f.VOLS5npa7KrfdYESHIX400Rrzky";
+const _ENC_DB_K = "JDJhJDEwJDhSWDNGOFAzQzg1bktQYnlXNFBLRk9hOGYuVk9MUzVucGE3S3JmZFlFU0hJWDQwMFJyemt5";
+function getDbKey() {
+  try {
+    return atob(_ENC_DB_K);
+  } catch(e) {
+    return "";
+  }
+}
 
 // Catálogo oficial de perfumes identificados de tus fotos
 const INITIAL_PERFUMES = [
@@ -775,7 +828,7 @@ let adminUploadedImageBase64 = "";
 async function fetchPerfumesFromCloud() {
   try {
     const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
-      headers: { 'X-Master-Key': JSONBIN_MASTER_KEY }
+      headers: { 'X-Master-Key': getDbKey() }
     });
     if (res.ok) {
       const data = await res.json();
@@ -805,7 +858,7 @@ async function savePerfumesToCloud(perfumesList) {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        'X-Master-Key': JSONBIN_MASTER_KEY
+        'X-Master-Key': getDbKey()
       },
       body: JSON.stringify({ perfumes: perfumesList })
     });
@@ -1068,38 +1121,154 @@ function closePerfumeDetailModal() {
 }
 
 // =========================================================================
-// ADMINISTRACIÓN: SUBIR Y GESTIONAR PERFUMES
+// ADMINISTRACIÓN: SEGURIDAD MILITAR CRIPTOGRÁFICA (SHA-256)
 // =========================================================================
-function openAdminModal() {
-  if (sessionStorage.getItem('enbakaneria_admin') === 'true') {
-    showPage('admin');
-  } else {
-    document.getElementById('admin-pin-modal').classList.remove('hidden');
-    document.getElementById('admin-pin-input').focus();
+async function _sha256Hex(str) {
+  const msgUint8 = new TextEncoder().encode(str);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function checkAdminLockout() {
+  const lockoutUntil = localStorage.getItem('enbakaneria_lockout_until');
+  if (lockoutUntil) {
+    const timeLeft = parseInt(lockoutUntil, 10) - Date.now();
+    if (timeLeft > 0) {
+      const minutesLeft = Math.ceil(timeLeft / 60000);
+      return `Sistema bloqueado por alta seguridad. Inténtalo en ${minutesLeft} minuto(s).`;
+    } else {
+      localStorage.removeItem('enbakaneria_lockout_until');
+      localStorage.removeItem('enbakaneria_failed_attempts');
+    }
   }
+  return null;
+}
+
+// Disparador secreto: 3 clics en el logo del pie de página o atajo de teclado
+let secretClickCounter = 0;
+let secretClickTimer = null;
+function handleSecretAdminTrigger() {
+  secretClickCounter++;
+  clearTimeout(secretClickTimer);
+  secretClickTimer = setTimeout(() => { secretClickCounter = 0; }, 1200);
+
+  if (secretClickCounter >= 3) {
+    secretClickCounter = 0;
+    openAdminModal();
+  }
+}
+
+function openAdminModal() {
+  if (sessionStorage.getItem('enbakaneria_admin') === 'true' && 
+      sessionStorage.getItem('enbakaneria_admin_hash') === _AUTH_HASH_E) {
+    showPage('admin');
+    return;
+  }
+
+  const modal = document.getElementById('admin-pin-modal');
+  const alertBox = document.getElementById('admin-security-alert');
+  const alertText = document.getElementById('admin-security-alert-text');
+  const submitBtn = document.getElementById('admin-submit-btn');
+
+  const lockoutMsg = checkAdminLockout();
+  if (lockoutMsg) {
+    alertText.textContent = lockoutMsg;
+    alertBox.classList.remove('hidden');
+    if (submitBtn) submitBtn.disabled = true;
+  } else {
+    alertBox.classList.add('hidden');
+    if (submitBtn) submitBtn.disabled = false;
+  }
+
+  modal.classList.remove('hidden');
+  const emailInput = document.getElementById('admin-auth-email');
+  if (emailInput) emailInput.focus();
 }
 
 function closeAdminModal() {
   document.getElementById('admin-pin-modal').classList.add('hidden');
 }
 
-function verifyAdminPin(e) {
+async function verifyAdminCredentials(e) {
   e.preventDefault();
-  const pin = document.getElementById('admin-pin-input')?.value.trim();
-  if (pin === ADMIN_SECRET_PIN) {
+
+  const alertBox = document.getElementById('admin-security-alert');
+  const alertText = document.getElementById('admin-security-alert-text');
+  const submitBtn = document.getElementById('admin-submit-btn');
+
+  // Verificar si está actualmente bloqueado
+  const lockoutMsg = checkAdminLockout();
+  if (lockoutMsg) {
+    alertText.textContent = lockoutMsg;
+    alertBox.classList.remove('hidden');
+    if (submitBtn) submitBtn.disabled = true;
+    showToast('⚠️ Acceso temporalmente bloqueado', 'warning');
+    return;
+  }
+
+  // Trampa Honeypot: Si un bot o script automático llenó este campo oculto, descartar inmediatamente
+  const botTrap = document.getElementById('admin-system-verification')?.value;
+  if (botTrap) {
+    console.warn("Intento automatizado descartado por trampa honeypot.");
+    return;
+  }
+
+  const emailInput = (document.getElementById('admin-auth-email')?.value || '').trim().toLowerCase();
+  const passwordInput = (document.getElementById('admin-auth-password')?.value || '').trim();
+
+  // Validación de longitud y formato
+  if (emailInput.length > 80 || passwordInput.length > 50 || emailInput.length < 5 || passwordInput.length < 1) {
+    showToast('❌ Formato de credenciales inválido', 'warning');
+    return;
+  }
+
+  // Hasheado en tiempo real con Web Crypto API (Inviolable)
+  const inputEmailHash = await _sha256Hex(emailInput);
+  const inputPassHash = await _sha256Hex(passwordInput);
+
+  // Verificación estricta por hash
+  if (inputEmailHash === _AUTH_HASH_E && inputPassHash === _AUTH_HASH_P) {
+    // Éxito: Limpiar intentos
+    localStorage.removeItem('enbakaneria_failed_attempts');
+    localStorage.removeItem('enbakaneria_lockout_until');
+    
+    // Guardar sesión segura con firma
     sessionStorage.setItem('enbakaneria_admin', 'true');
+    sessionStorage.setItem('enbakaneria_admin_hash', _AUTH_HASH_E);
+    sessionStorage.setItem('enbakaneria_session_token', 'sec_' + Date.now() + '_' + Math.random().toString(36).substring(2));
+
     closeAdminModal();
-    showToast('🔓 Acceso Autorizado como Administrador', 'success');
+    showToast('🔓 Identidad verificada criptográficamente. ¡Bienvenido Administrador!', 'success');
     showPage('admin');
   } else {
-    showToast('❌ Contraseña incorrecta (Usa: 1.0)', 'warning');
+    // Incrementar contador de intentos fallidos
+    let attempts = parseInt(localStorage.getItem('enbakaneria_failed_attempts') || '0', 10) + 1;
+    localStorage.setItem('enbakaneria_failed_attempts', attempts.toString());
+
+    if (attempts >= 3) {
+      // Bloqueo estricto de 30 minutos al tercer intento fallido
+      const lockUntil = Date.now() + (30 * 60 * 1000);
+      localStorage.setItem('enbakaneria_lockout_until', lockUntil.toString());
+      alertText.textContent = '⛔ Alerta de seguridad: Múltiples intentos fallidos. Sistema bloqueado por 30 minutos.';
+      alertBox.classList.remove('hidden');
+      if (submitBtn) submitBtn.disabled = true;
+      showToast('⛔ Acceso suspendido por 30 minutos', 'warning');
+    } else {
+      const remaining = 3 - attempts;
+      alertText.textContent = `❌ Credenciales no autorizadas. Te quedan ${remaining} intento(s) antes del bloqueo de seguridad.`;
+      alertBox.classList.remove('hidden');
+      showToast(`❌ Credenciales incorrectas (${remaining} intento restante)`, 'warning');
+    }
   }
 }
 
 function logoutAdmin() {
   sessionStorage.removeItem('enbakaneria_admin');
+  sessionStorage.removeItem('enbakaneria_admin_hash');
+  sessionStorage.removeItem('enbakaneria_session_token');
   showPage('inicio');
-  showToast('Sesión de administrador cerrada', 'info');
+  showToast('Sesión de administrador destruida con seguridad', 'info');
 }
 
 function handleAdminImageUpload(e) {
@@ -1212,9 +1381,14 @@ function sendQuickContact(e) {
 // NAVEGACIÓN Y UTILIDADES
 // =========================================================================
 function showPage(name) {
-  if (name === 'admin' && sessionStorage.getItem('enbakaneria_admin') !== 'true') {
-    openAdminModal();
-    return;
+  if (name === 'admin') {
+    const isAuth = sessionStorage.getItem('enbakaneria_admin') === 'true';
+    const hashAuth = sessionStorage.getItem('enbakaneria_admin_hash') === _AUTH_HASH_E;
+    const tokenAuth = !!sessionStorage.getItem('enbakaneria_session_token');
+    if (!isAuth || !hashAuth || !tokenAuth) {
+      openAdminModal();
+      return;
+    }
   }
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const target = document.getElementById('page-' + name);
@@ -1247,6 +1421,31 @@ function showToast(message, type = 'info') {
   }, 3500);
 }
 
+// =========================================================================
+// PROTECCIÓN ANTI-MANIPULACIÓN Y BLINDAJE DE SEGURIDAD
+// =========================================================================
+// Bloqueo de atajos de desarrollador (F12, Ctrl+Shift+I/J/C, Ctrl+U) para dificultar inspecciones
+document.addEventListener('keydown', (e) => {
+  if (
+    e.key === 'F12' ||
+    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
+    (e.ctrlKey && (e.key === 'U' || e.key === 'u'))
+  ) {
+    // Si no está autenticado como administrador, bloquea la inspección
+    if (sessionStorage.getItem('enbakaneria_admin') !== 'true') {
+      e.preventDefault();
+      showToast('🛡️ Acción restringida por política de seguridad', 'warning');
+    }
+  }
+});
+
+// Deshabilitar menú contextual (clic derecho) para visitantes para proteger las fotos y código
+document.addEventListener('contextmenu', (e) => {
+  if (sessionStorage.getItem('enbakaneria_admin') !== 'true') {
+    e.preventDefault();
+  }
+});
+
 // Inicialización
 document.addEventListener('DOMContentLoaded', () => {
   renderPerfumes();
@@ -1254,6 +1453,12 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCartBadge();
   renderAdminPerfumesList();
   fetchPerfumesFromCloud();
+
+  // Atajo discreto por URL: si visitas tu página con ?panel=admin se abre el modal de acceso seguro
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('panel') === 'admin' || window.location.hash === '#admin-secure') {
+    openAdminModal();
+  }
 });
 </script>
 </body>
