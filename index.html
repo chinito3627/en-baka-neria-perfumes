@@ -302,7 +302,8 @@ vercel-live-feedback, #__vercel-toolbar, [data-vercel-toolbar], div[class*="verc
           <option value="Hombre">Hombre</option>
           <option value="Mujer">Mujer</option>
           <option value="Unisex">Unisex</option>
-          <option value="Árabe">Árabe / Niche</option>
+          <option value="Nicho / Lujo">Nicho / Lujo</option>
+          <option value="Combos Especiales">Combos Especiales</option>
         </select>
       </div>
     </div>
@@ -475,7 +476,8 @@ vercel-live-feedback, #__vercel-toolbar, [data-vercel-toolbar], div[class*="verc
                 <option value="Hombre">Hombre</option>
                 <option value="Mujer">Mujer</option>
                 <option value="Unisex">Unisex</option>
-                <option value="Árabe">Árabe / Niche</option>
+                <option value="Nicho / Lujo">Nicho / Lujo</option>
+                <option value="Combos Especiales">Combos Especiales</option>
               </select>
             </div>
           </div>
@@ -604,60 +606,114 @@ const ADMIN_SECRET_PIN = "1.0"; // Clave para entrar al panel
 const JSONBIN_BIN_ID = "6ab59051ffd5d160532be067";
 const JSONBIN_MASTER_KEY = "$2a$10$8RX3F8P3C85nKPbyW4PKFOa8f.VOLS5npa7KrfdYESHIX400Rrzky";
 
-// Catálogo inicial de Perfumes de alta demanda
+// Catálogo oficial de perfumes identificados de tus fotos
 const INITIAL_PERFUMES = [
   {
-    id: "perf_1",
-    name: "Lattafa Khamrah Eau De Parfum 100ml",
-    category: "Árabe",
-    price: 55.00,
-    image: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=500&auto=format&fit=crop&q=80",
-    description: "Una fragancia gourmand lujosa con notas de canela, nuez moscada, praliné y vainilla dulce. Fijación estelar de más de 12 horas.",
-    stock: "Disponible"
-  },
-  {
-    id: "perf_2",
-    name: "Club de Nuit Intense Man Armaf 105ml",
-    category: "Hombre",
-    price: 45.00,
-    image: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=500&auto=format&fit=crop&q=80",
-    description: "El rey indiscutible de los cumplidos. Salida cítrica fresca con corazón ahumado de abedul y fondo amaderado seductor.",
-    stock: "Disponible"
-  },
-  {
-    id: "perf_3",
-    name: "Lattafa Asad Eau de Parfum 100ml",
+    id: "perf_asad_black",
+    name: "Lattafa Asad Eau De Parfum 100ml",
     category: "Hombre",
     price: 48.00,
-    image: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?w=500&auto=format&fit=crop&q=80",
-    description: "Fragancia masculina potente con pimienta negra, piña, café, iris y un fondo cálido de ámbar y vainilla.",
+    image: "images/lattafa_asad_black.jpeg",
+    description: "Una de las fragancias árabes masculinas más deseadas. Notas de pimienta negra, piña, tabaco, café e iris, con fondo de ámbar y vainilla.",
     stock: "Disponible"
   },
   {
-    id: "perf_4",
-    name: "Lattafa Yara Eau De Parfum 100ml (Rosa)",
-    category: "Mujer",
-    price: 42.00,
-    image: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=500&auto=format&fit=crop&q=80",
-    description: "Fragancia femenina dulce, cremosa y floral. Con notas de helado de fresa, frutas tropicales, orquídea y malvavisco.",
+    id: "perf_asad_bourbon",
+    name: "Lattafa Asad Bourbon Special Edition",
+    category: "Hombre",
+    price: 54.00,
+    image: "images/asad_bourbon.jpeg",
+    description: "Edición cálida y seductora con acordes de licor de bourbon, maderas nobles, especias dulces y un toque de cuero ahumado de alta duración.",
     stock: "Disponible"
   },
   {
-    id: "perf_5",
-    name: "Bade'e Al Oud for Glory Lattafa 100ml",
-    category: "Unisex",
+    id: "perf_asad_zanzibar",
+    name: "Lattafa Asad Zanzibar Eau De Parfum 100ml",
+    category: "Hombre",
     price: 52.00,
-    image: "https://images.unsplash.com/photo-1616949755610-8c9bbc08f138?w=500&auto=format&fit=crop&q=80",
-    description: "Una joya amaderada y oriental con azafrán, lavanda, nuez moscada y una base profunda de oud y pachulí.",
+    image: "images/asad_zanzibar.jpeg",
+    description: "Fragancia exótica y marina con agua de coco fresca, pimienta de Madagascar, lavanda, incienso e iris sobre fondo de vainilla salada.",
     stock: "Disponible"
   },
   {
-    id: "perf_6",
-    name: "Afnan 9 PM Eau De Parfum 100ml",
+    id: "perf_yara_moi",
+    name: "Lattafa Yara Moi (Blanco) Eau De Parfum 100ml",
+    category: "Mujer",
+    price: 45.00,
+    image: "images/yara_moi_white.jpeg",
+    description: "Fragancia femenina elegante apodada la 'Yara Blanca'. Notas de jazmín blanco, melocotón jugoso, caramelo tibio, ámbar y pachulí suave.",
+    stock: "Disponible"
+  },
+  {
+    id: "perf_hawas_fire",
+    name: "Rasasi Hawas Fire For Him 100ml",
+    category: "Hombre",
+    price: 68.00,
+    image: "images/hawas_fire.jpeg",
+    description: "La versión más intensa y ardiente de Hawas. Combina notas especiadas cálidas, frutos rojos oscuros, canela, ámbar y maderas potentes.",
+    stock: "Disponible"
+  },
+  {
+    id: "perf_amber_oud_ruby",
+    name: "Al Haramain Amber Oud Ruby Edition",
+    category: "Unisex",
+    price: 85.00,
+    image: "images/amber_oud_ruby.jpeg",
+    description: "Lujosa inspiración del Baccarat Rouge 540 Extrait. Almendra amarga, azafrán fino, jazmín egipcio, cedro y ámbar gris con proyección monstruosa.",
+    stock: "Disponible"
+  },
+  {
+    id: "perf_bond9_sutton",
+    name: "Bond No. 9 New York Sutton Place",
+    category: "Nicho / Lujo",
+    price: 165.00,
+    image: "images/bond9_sutton_place.jpeg",
+    description: "Perfumería de ultra-nicho neoyorquina. Notas de bergamota, piña, grosellas negras, jazmín, pachulí, ámbar, almizcle y cuero exclusivo.",
+    stock: "Disponible"
+  },
+  {
+    id: "perf_odyssey_aoud",
+    name: "Armaf Odyssey Aoud Edition 100ml",
     category: "Hombre",
     price: 48.00,
-    image: "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=500&auto=format&fit=crop&q=80",
-    description: "Perfume nocturno y de fiesta por excelencia. Notas de manzana jugosa, canela, lavanda, vainilla y haba tonka.",
+    image: "images/odyssey_aoud.jpeg",
+    description: "Presentación icónica en frasco termo dorado. Fragancia oriental amaderada con oud suave, azafrán, notas florales y ámbar adictivo.",
+    stock: "Disponible"
+  },
+  {
+    id: "perf_cdn_urban_elixir",
+    name: "Armaf Club De Nuit Urban Man Elixir",
+    category: "Hombre",
+    price: 52.00,
+    image: "images/club_de_nuit_urban_elixir.jpeg",
+    description: "La fusión perfecta entre Sauvage y Aventus. Salida de bergamota, pimienta rosa y lavanda sobre fondo de ambroxan, cedro y pachulí.",
+    stock: "Disponible"
+  },
+  {
+    id: "perf_pride_nebras",
+    name: "Lattafa Pride Nebras Eau De Parfum 100ml",
+    category: "Unisex",
+    price: 56.00,
+    image: "images/lattafa_pride_nebras.jpeg",
+    description: "Diseño cósmico exclusivo Lattafa Pride. Fragancia gourmand ultra dulce con bayas rojas, mandarina, vainilla, cacao y haba tonka.",
+    stock: "Disponible"
+  },
+  {
+    id: "perf_game_of_spades_coll",
+    name: "Colección Jo Milano Game Of Spades (Extrait de Parfum)",
+    category: "Nicho / Lujo",
+    price: 75.00,
+    image: "images/game_of_spades_1.jpeg",
+    description: "Línea completa Game Of Spades (Rouge, Ace, Royale, Full-House, Emerald, Bid, Topaz, Wildcard). Concentración Extrait con fijación 24h.",
+    stock: "Disponible"
+  },
+  {
+    id: "perf_combo_trilogia",
+    name: "Trilogía Árabe VIP (Yara + Odyssey + Asad)",
+    category: "Combos Especiales",
+    price: 135.00,
+    image: "images/combo_trilogia.jpeg",
+    description: "Combo especial con 3 de los perfumes más vendidos: Lattafa Yara, Armaf Odyssey Mountain y Lattafa Asad Black 100ml originales.",
     stock: "Disponible"
   }
 ];
@@ -680,11 +736,14 @@ async function fetchPerfumesFromCloud() {
     });
     if (res.ok) {
       const data = await res.json();
-      if (data && data.record && Array.isArray(data.record.perfumes)) {
+      if (data && data.record && Array.isArray(data.record.perfumes) && data.record.perfumes.length > 0) {
         allPerfumes = data.record.perfumes;
         localStorage.setItem('enbakaneria_perfumes', JSON.stringify(allPerfumes));
         renderPerfumes();
         renderAdminPerfumesList();
+      } else {
+        // Si el bin de JSONBin está recién creado y vacío, subimos el catálogo completo
+        await savePerfumesToCloud(allPerfumes);
       }
     }
   } catch (err) {
