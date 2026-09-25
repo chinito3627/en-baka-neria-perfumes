@@ -617,6 +617,19 @@ img {
   </div>
 </div>
 
+<!-- PANTALLA ROJA DE BLOQUEO POR SOBRECARGA / RECARGAS CONTINUAS -->
+<div id="ddos-lockdown-screen" class="hidden fixed inset-0 bg-[#8b0000] z-[999999] flex flex-col items-center justify-center p-6 text-center select-none cursor-not-allowed">
+  <div class="max-w-2xl w-full flex flex-col items-center justify-center animate-pulse">
+    <img src="images/warning_alert.png" alt="Peligro" class="w-64 max-w-[80vw] h-auto drop-shadow-[0_0_35px_rgba(0,0,0,0.9)] mb-6">
+    <h1 class="font-cinzel text-3xl sm:text-5xl md:text-6xl font-black text-white tracking-wider leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] mb-4">
+      SIGUE INTENTANDO HIJO DE PERRA
+    </h1>
+    <p class="text-sm md:text-base text-red-200 font-bold uppercase tracking-widest bg-black/60 px-6 py-2.5 rounded-full border border-red-500/50 shadow-2xl">
+      🚫 Intento de sobrecarga detectado. Acceso bloqueado.
+    </p>
+  </div>
+</div>
+
 <!-- FOOTER -->
 <footer class="bg-[#09090c] border-t border-gold-500/20 py-8 px-6 text-center text-xs text-gray-500">
   <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
@@ -1453,20 +1466,59 @@ window.addEventListener('dragstart', (e) => {
 // Protección Anti-Sobrecarga (Anti-Flood / Spam de Recargas F5 o botón recargar)
 (function antiFloodGuard() {
   const now = Date.now();
+  
+  // Revisar si ya está en estado de castigo/bloqueo
+  const lockedUntil = localStorage.getItem('enbakaneria_overload_block');
+  if (lockedUntil && now < parseInt(lockedUntil, 10)) {
+    window.addEventListener('DOMContentLoaded', () => {
+      triggerDdosLockdown();
+    });
+    return;
+  } else if (lockedUntil) {
+    localStorage.removeItem('enbakaneria_overload_block');
+  }
+
   let reloadHistory = JSON.parse(sessionStorage.getItem('enbakaneria_reload_history') || '[]');
-  // Mantener solo los últimos 5 segundos
-  reloadHistory = reloadHistory.filter(t => now - t < 5000);
+  // Filtrar recargas ocurridas en una ventana rápida de 4 segundos
+  reloadHistory = reloadHistory.filter(t => now - t < 4000);
   reloadHistory.push(now);
   sessionStorage.setItem('enbakaneria_reload_history', JSON.stringify(reloadHistory));
 
-  // Si recarga más de 5 veces en menos de 5 segundos
-  if (reloadHistory.length > 5) {
-    console.warn("Límite de recargas alcanzado. Bloqueando peticiones innecesarias.");
+  // Si intenta recargar 2 o más veces seguidas rápidamente
+  if (reloadHistory.length >= 2) {
+    // Bloquear por 10 minutos
+    localStorage.setItem('enbakaneria_overload_block', (now + 10 * 60 * 1000).toString());
+    window.addEventListener('DOMContentLoaded', () => {
+      triggerDdosLockdown();
+    });
   }
 })();
 
-// Bloqueo de atajos de teclado para ver código fuente o abrir herramientas (F12, Ctrl+U, Ctrl+Shift+I, etc.)
+function triggerDdosLockdown() {
+  const screen = document.getElementById('ddos-lockdown-screen');
+  if (screen) {
+    screen.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+}
+
+// Bloqueo de atajos de teclado y detección de spam de F5
 window.addEventListener('keydown', (e) => {
+  if (e.key === 'F5' || (e.ctrlKey && (e.key === 'r' || e.key === 'R'))) {
+    const now = Date.now();
+    let f5Hits = JSON.parse(sessionStorage.getItem('enbakaneria_f5_hits') || '[]');
+    f5Hits = f5Hits.filter(t => now - t < 4000);
+    f5Hits.push(now);
+    sessionStorage.setItem('enbakaneria_f5_hits', JSON.stringify(f5Hits));
+
+    if (f5Hits.length >= 2) {
+      e.preventDefault();
+      localStorage.setItem('enbakaneria_overload_block', (now + 10 * 60 * 1000).toString());
+      triggerDdosLockdown();
+      return false;
+    }
+  }
+
   const isDevTools = 
     e.key === 'F12' ||
     (e.ctrlKey && e.shiftKey && ['I', 'i', 'J', 'j', 'C', 'c'].includes(e.key)) ||
