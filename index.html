@@ -827,8 +827,17 @@ let allPerfumes = (() => {
 let cart = JSON.parse(localStorage.getItem('enbakaneria_cart') || '[]');
 let adminUploadedImageBase64 = "";
 
-// Sincronizar catálogo desde JSONBin al cargar
+// Sincronizar catálogo desde JSONBin con protección anti-sobrecarga (Rate-Limit & Cache)
 async function fetchPerfumesFromCloud() {
+  const now = Date.now();
+  const lastFetch = parseInt(sessionStorage.getItem('enbakaneria_last_fetch') || '0', 10);
+  
+  // Si se recarga en menos de 10 segundos, usa la memoria local y evita llamar a la base de datos
+  if (now - lastFetch < 10000 && allPerfumes && allPerfumes.length > 0) {
+    return;
+  }
+  sessionStorage.setItem('enbakaneria_last_fetch', now.toString());
+
   try {
     const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
       headers: { 'X-Master-Key': getDbKey() }
@@ -1440,6 +1449,21 @@ window.addEventListener('dragstart', (e) => {
     return false;
   }
 });
+
+// Protección Anti-Sobrecarga (Anti-Flood / Spam de Recargas F5 o botón recargar)
+(function antiFloodGuard() {
+  const now = Date.now();
+  let reloadHistory = JSON.parse(sessionStorage.getItem('enbakaneria_reload_history') || '[]');
+  // Mantener solo los últimos 5 segundos
+  reloadHistory = reloadHistory.filter(t => now - t < 5000);
+  reloadHistory.push(now);
+  sessionStorage.setItem('enbakaneria_reload_history', JSON.stringify(reloadHistory));
+
+  // Si recarga más de 5 veces en menos de 5 segundos
+  if (reloadHistory.length > 5) {
+    console.warn("Límite de recargas alcanzado. Bloqueando peticiones innecesarias.");
+  }
+})();
 
 // Bloqueo de atajos de teclado para ver código fuente o abrir herramientas (F12, Ctrl+U, Ctrl+Shift+I, etc.)
 window.addEventListener('keydown', (e) => {
